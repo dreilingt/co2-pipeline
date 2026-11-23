@@ -8,9 +8,9 @@ The agent did not read any files for the third prompt. Instead, it wrote a Pytho
 ### Three claims
 | Claim of the agent | My command | Result |
 | --- | --- | --- |
-| Units: `co2` in million tonnes (Mt), `co2_per_capita` in tonnes per person (t/person), `population` in people | `grep -E "^(co2|co2_per_capita|population)," data/raw/owid-co2-codebook.csv` | Correct, same as the codebook |
-| 36 entries in `country` have no ISO code (regions, other entities, and Kosovo) | `grep -E "^[^,]*,[0-9]+,," data/raw/owid-co2-data.csv | cut -d, -f1 | sort -u` | Correct: 36 entries, the same list as the agent's |
-| Number of entities in `country` : the agent did not state it, it is mentioned in the lab text | `tail -n +2 data/raw/owid-co2-data.csv | cut -d, -f1 | sort -u | wc -l` | 254, as in the lab text |
+| Units: `co2` in million tonnes (Mt), `co2_per_capita` in tonnes per person (t/person), `population` in people | `grep -E "^(co2\|co2_per_capita\|population)," data/raw/owid-co2-codebook.csv` | Correct, same as the codebook |
+| 36 entries in `country` have no ISO code (regions, other entities, and Kosovo) | `grep -E "^[^,]*,[0-9]+,," data/raw/owid-co2-data.csv \| cut -d, -f1 \| sort -u` | Correct: 36 entries, the same list as the agent's |
+| Number of entities in `country`: the agent did not state it, it is mentioned in the lab text | `tail -n +2 data/raw/owid-co2-data.csv \| cut -d, -f1 \| sort -u \| wc -l` | 254, as in the lab text |
 
 The agent mentioned both Kosovo and International shipping. If we kept only rows with an ISO code, 218 entities would remain (254 - 36 = 218). It means that International shipping would be removed, which is right, but Kosovo would be lost too.
 
