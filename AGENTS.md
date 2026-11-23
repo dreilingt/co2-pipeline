@@ -1,3 +1,5 @@
+# AGENTS.md
+
 ## Project
 The aim of the project is to find out, which EU country has reduced its CO₂ emissions per person the most since 2000.
 
@@ -13,9 +15,8 @@ The aim of the project is to find out, which EU country has reduced its CO₂ em
 - Source: Our World in Data, CO₂ and Greenhouse Gas Emissions, https://github.com/owid/co2-data, licence CC BY 4.0.
 - Pinned version of 2 June 2026: commit `382ee6c662b0ece26e111f263b44c029afad7787`.
 - Files: `data/raw/owid-co2-data.csv`, codebook: `data/raw/owid-co2-codebook.csv`.
-- Units: `co2` in million tonnes, `population` in persons,
-`co2_per_capita` in tonnes per person.
-- Not countries: 36 of the 254 entries in `country` have an empty `iso_code`(World, continents, income groups, regions, the European Union (27), International aviation and shipping).
+- Units: `co2` in million tonnes, `population` in persons, `co2_per_capita` in tonnes per person.
+- Not countries: 36 of the 254 entries in `country` have an empty `iso_code` (World, continents, income groups, regions, the European Union (27), International aviation and shipping).
 - Exception: Kosovo is a country without `iso_code`, do not drop it silently.
 - Years: `co2`, `co2_per_capita` and `population` run until 2024; but not all columns cover the same years
 
@@ -27,3 +28,5 @@ The aim of the project is to find out, which EU country has reduced its CO₂ em
 - No silent filling of missing values.
 - Never invent URLs; ask instead.
 - Do not commit or push. The user reviews the diff and commits.
+- Do not read the whole data file; use the header, the codebook or targeted queries.
+- Before handing off: run `python -m pytest`, check that `data/raw/` is unchanged, and review `git status` and `git diff`.
