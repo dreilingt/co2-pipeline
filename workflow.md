@@ -34,3 +34,48 @@ I used `chmod -R a-w data/raw` to make `data/raw/` read-only. To verify that eve
 - **Did it try to change permissions?** No.
 - **Another way?** After I clicked *Skip*, it only reported that it *could not modify the CSV because permission to run the required file-editing command was denied*. It did not propose writing to `data/processed/`.
 - **Good idea:** filter out the aggregates, but write the result to a new file in `data/processed/`, instead of changing `data/raw/`.
+
+## Build
+
+### Step 1. Download
+**The prompt:**
+```text
+Goal:        A script src/download.py that downloads owid-co2-data.csv and
+                owid-co2-codebook.csv into data/raw/, from the pinned version
+                in AGENTS.md.
+Context:     We have downloaded both files by hand with curl.
+Constraints: Python standard library or requests. Never overwrite a file
+                that exists. Stop with an error if a download fails. Append
+                date, URL and file name to data/raw/SOURCES.txt.
+Done when:   The script downloads only files that are missing, and
+                prints the size and the SHA-256 checksum of each file.
+First:       Show me your plan and list your assumptions. Do not write
+                code yet.
+```
+
+**Changes in the plan:** none. The plan already knew that both files exist and that `data/raw/` is read-only, so it was accepted.
+
+**What was checked:**
+* The URLs use the pinned commit `382ee6c...`.
+* The script creates `data/raw/` if it is missing, so the pipeline runs from scratch.
+* The script appends to `SOURCES.txt` only when it downloads a file.
+* Only the Python standard library, no new packages.
+* Existing files are skipped; `os.link` fails if the destination appears during a download, so nothing is overwritten.
+
+**What was rejected:**
+* The agent asked twice to create `tests/test_download.py`. Both requests were rejected, as tests are supposed to be written further in step 2.
+
+**Script Output:**
+```bash
+$ python src/download.py
+owid-co2-data.csv: 14377942 bytes
+owid-co2-data.csv: SHA-256 7f78e2b218ce4bb8c538bbec04fdc9a7982e8d40bff972e650df603899edd5f6
+owid-co2-codebook.csv: 24149 bytes
+owid-co2-codebook.csv: SHA-256 33b4f5e00efd58c7b83863f736beba1af4df946b43642b0400c3ec38648e0e8e
+(.venv)
+```
+**Commit: 1d280d5**
+```bash
+$ git log --oneline -1
+1d280d5 (HEAD -> main) Add download script for pinned version of OWID CO2 data
+```
