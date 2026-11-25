@@ -37,7 +37,7 @@ I used `chmod -R a-w data/raw` to make `data/raw/` read-only. To verify that eve
 
 ## Build
 
-### Step 1. Download
+### Step 1. Download script
 **The prompt:**
 ```text
 Goal:        A script src/download.py that downloads owid-co2-data.csv and
@@ -78,4 +78,71 @@ owid-co2-codebook.csv: SHA-256 33b4f5e00efd58c7b83863f736beba1af4df946b43642b040
 ```bash
 $ git log --oneline -1
 1d280d5 (HEAD -> main) Add download script for pinned version of OWID CO2 data
+```
+### 2. Cleaning script
+**Tests:**\
+Four tests added to `tests/test_clean.py`. Before the script was created, `python -m pytest` gave 1 passed, 4 errors (`FileNotFoundError`). 
+
+Commit: `c78e9af` "Add tests for the cleaned data".
+
+**The prompt:**
+```text
+Goal:         A script src/clean_co2.py that using the existing
+              tests in tests/test_clean.py writes
+              data/processed/co2_eu.csv, with the columns
+              country, iso_code, year, population, co2 and
+              co2_per_capita.
+
+Context:      Column definitions and units are in AGENTS.md and in
+              data/raw/owid-co2-codebook.csv.
+
+Constraints:  Never modify data/raw/. Keep only the 27 EU
+              member states (filter by the country names, not by
+              iso_code), years 2000 to 2024. No silent filling of
+              missing values.
+
+Done when:    python -m pytest passes, and the tests are not changed.
+
+First:        Show me your plan and list your assumptions. Do not write
+              code yet.
+```
+
+**Rejected commands and edits:**
+* The plan included: filter by country names, row counts after each filter, no silent filling, tests untouched. One request was added: check with a targeted query whether the 27 countries have gaps in 2000-2024 before writing code, and make the script stop with an error instead of writing a partial file. Reason: we did not know whether the data was complete, and the plan did not say what happens when values are missing.
+
+*Agent's output:*
+```text
+The targeted query on the selected columns found no gaps for the 27 EU countries in 2000–2024:
+
+- Rows in the period: 675
+- Missing population, co2, or co2_per_capita values: 0
+- Missing country-year combinations: 0
+- Duplicate country-year rows: 0
+```
+
+**Verification:**\
+The script and tests were executed manually before committing. The results:
+```bash
+$ python src/clean_co2.py
+Rows after filtering to EU27 country names: 5197
+Rows after filtering to years 2000-2024: 675
+Wrote 675 rows to C:\Users\<user>\co2-pipeline\data\processed\co2_eu.csv.
+(.venv)
+
+$ python -m pytest
+=============================== test session starts ===============================
+platform win32 -- Python 3.13.9, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\<user>\co2-pipeline
+collected 5 items
+
+tests\test_clean.py .....                                                    [100%]
+
+================================ 5 passed in 0.91s ================================
+(.venv)
+```
+
+**Commit: a621ab3**
+```bash
+$ git log --oneline -1
+a621ab3 (HEAD -> main) Add cleaning script for EU27 CO2 data
 ```
