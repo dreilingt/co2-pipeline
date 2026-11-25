@@ -146,3 +146,98 @@ tests\test_clean.py .....                                                    [10
 $ git log --oneline -1
 a621ab3 (HEAD -> main) Add cleaning script for EU27 CO2 data
 ```
+
+### 3. Analysis
+**First prompt:**
+```text
+Goal:        A script src/analyse.py that reads data/processed/co2_eu.csv,
+             prints the three countries with the biggest cut in tonnes per
+             person and the three with the biggest cut in percent (both from
+             2000 to 2024). It also saves one chart in figures/.
+Context:     co2_eu.csv has the columns country, iso_code, year, population,
+             co2 and co2_per_capita (tonnes per person). It contains the 27
+             EU member states for 2000 to 2024, one row per country and year.
+Constraints: Only the packages in requirements.txt. Never modify data/raw/
+             or data/processed/. Do not change the tests. Create figures/ if
+             it does not exist. The chart should come with labelled axes and a title.
+Done when:   python src/analyse.py runs, prints both top-three lists with
+             the 2000 and 2024 values, and creates the chart to figures/.
+First:       Show me your plan and list your assumptions. Do not write
+             code yet.
+```
+**Changes in the plan:**
+The plan was accepted with three changes: the agent must not read `workflow.md` (it is not necessary for the analysis). Second, it checks the CSV only through its header and the rows for 2000 and 2024, not the whole file (rule from `AGENTS.md`). Finally, the chart is one file with one figure with **two side-by-side panels** (tonnes per person on the left, percent on the right, top three EU-countries each).
+
+**Rejected commands and edits:**
+The agent asked to edit the script to check that the columns 2000 and 2024 exist before selecting them (so that a missing year gives a `ValueError` instead of a `KeyError`). I rejected it, because the data is already complete (checked in step 2).
+
+**Second prompt: styling.** After the first version I decided to improve the chart and wrote a new prompt:
+```text
+Goal:        Change only the chart styling in src/analyse.py. Keep the top three
+             in each panel, one figure with two side-by-side panels, one file
+             in figures/.
+Context:     The calculations, the top-three selection and the printed output
+             are already correct. Keep them unchanged.
+Constraints: Left panel violet, right panel orange. Write the value at the end
+             of each bar (2 decimals for tonnes, 1 decimal for percent), and
+             leave enough room on the right so the labels are not cut off.
+             X axis: keep the axis label with the unit, remove ticks and tick
+             labels. Figure title: "EU-27: Reduction in CO₂ emissions per
+             capita, 2000–2024". Biggest reduction stays at the top. Only
+             packages in requirements.txt. Do not read workflow.md. Do not
+             change formulas, years, tests or data.
+Done when:   python src/analyse.py runs, prints the same two top-three lists
+             as before, and overwrites the chart in figures/.
+First:       Show me your plan and list your assumptions. Do not write code yet.
+```
+The plan was good (only styling, calculations unchanged, `workflow.md` not read), but it added a `%` sign to the percent labels, which I had not asked for. I accepted the plan with this message:
+```text
+Plan accepted. Please confirm in the code: the x axis limit leaves room so the value labels are not cut off; the title is exactly "EU-27: Reduction in CO₂ emissions per capita, 2000–2024"; Percent labels should not include a % sign. Implement it.
+```
+
+**Third prompt:**
+```text
+In co2_reductions_2000_2024.png change:
+
+Left title: Largest reductions in absolute terms
+Right title: Largest percentage reductions
+Left X-axis: Reduction (tonnes CO₂ per person)
+Right X-axis: Reduction (%)
+```
+Agent's output: Updated the two panel titles and x-axis labels in `analyse.py`, then regenerated `co2_reductions_2000_2024.png`.
+
+**Verification:**\
+The script and the tests were run manually before committing.
+```bash
+$ python src/analyse.py
+Rows after filtering to years 2000 and 2024: 54
+
+Top three cuts by tonnes/person:
+Luxembourg: 2000=19.953 tonnes/person, 2024=10.460 tonnes/person, cut=9.49 tonnes/person
+Finland: 2000=11.015 tonnes/person, 2024=5.301 tonnes/person, cut=5.71 tonnes/person
+Ireland: 2000=11.900 tonnes/person, 2024=6.339 tonnes/person, cut=5.56 tonnes/person
+
+Top three cuts by %:
+Denmark: 2000=10.170 tonnes/person, 2024=4.746 tonnes/person, cut=53.33 %
+Finland: 2000=11.015 tonnes/person, 2024=5.301 tonnes/person, cut=51.87 %
+Malta: 2000=6.172 tonnes/person, 2024=3.204 tonnes/person, cut=48.09 %
+
+Wrote chart to C:\Users\<user>\co2-pipeline\figures\co2_reductions_2000_2024.png.
+
+$ python -m pytest
+=============================== test session starts ===============================
+platform win32 -- Python 3.13.9, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\<user>\co2-pipeline
+collected 5 items
+
+tests\test_clean.py .....                                                    [100%]
+
+================================ 5 passed in 0.68s ================================
+(.venv)
+```
+
+**Commit: c184d7b**
+```bash
+$ git log --oneline -1
+c184d7b (HEAD -> main) Add analysis script and chart with top 3 EU-countries
+```
