@@ -1,0 +1,11 @@
+## Bug Hunt
+Manual review of the script `eu_report.py`, based on the slide *Review checklist for data code*.
+
+| # | Function | Row of the checklist | What goes wrong | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | `eu_members` | Joins and merges | Data in rows with `Czechia` is missed, because in `MEMBERS` it is `Czech Republic` instead of `Czechia`. The report keeps saying "27 EU member states" | `cut -d, -f1 data/raw/owid-co2-data.csv \| sort -u \| grep -i czech` gives `Czechia` |
+| 2 | `eu_members` | Missing values | `dropna(subset=["consumption_co2"])` drops every row without consumption-based CO2 for all sections, although only the imports section needs it. `consumption_co2` starts in 1990 and ends in 2023, so the report ends in 2023 although territorial CO2 exists for 2024. | `awk -F, '$1=="European Union (27)" && $8!="" {y=$2} END{print y}' data/raw/owid-co2-data.csv` gives 2024, the same with `$22` gives 2023 |
+| 3 | `per_person` | Aggregation | `.mean()` calculates an unweighted average of the countries' per-capita values (a mean of ratios), so each country contributes equally regardless of its population: Luxembourg counts as much as Germany. The correct EU value is total CO2 divided by total population. | `awk -F, '$1=="European Union (27)" && ($2==1990 \|\| $2==2023) {print $2, $8*1000000/$4}' data/raw/owid-co2-data.csv` gives 9.21 and 5.51 t, the script reports 9.9 and 5.4 t |
+| 4 | `world_share` | Filters / Aggregates | `world = df.groupby("year")["co2"].sum()` sums all rows in the dataset instead of selecting the World row. This results in an incorrect denominator and underestimates the EU's share of global emissions. | `awk -F, '$2==1990 {s+=$8} END{print s}' data/raw/owid-co2-data.csv` gives 154667; `grep "^World,1990," data/raw/owid-co2-data.csv \| cut -d, -f1,2,8` gives `World,1990,22732.145` |
+| 5 | `biggest_cuts` | Filters | `eu["year"] > since` excludes 1990 (BASE_YEAR), so the comparison starts in 1991 although the report says "since 1990". It should be `>=`. | `period = eu[eu["year"] > since]` with `since = BASE_YEAR = 1990` |
+| 6 | `chart` | Units and scales | The y-axis label says "CO₂ emissions (t)", but the values are expressed in million tonnes (Mt). Additionally, the y-axis starts at 2000 rather than 0. | `ax.set_ylabel("CO₂ emissions (Mt)")`, `ax.set_ylim(0, None)` |
