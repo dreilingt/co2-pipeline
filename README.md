@@ -48,8 +48,9 @@ python src/analyse.py
 - Dataset: Our World in Data, CO₂ and Greenhouse Gas Emissions, https://github.com/owid/co2-data, licence CC BY 4.0. Pinned version of 2 June 2026: commit `382ee6c662b0ece26e111f263b44c029afad7787`.
 - Authors: Pablo Rosado, Hannah Ritchie, Max Roser, Edouard Mathieu, and Bobbie Macdonald.
 - Original sources of the columns used (column `source` in the `codebook`):
-  `co2`: Global Carbon Budget (2025), globalcarbonbudget.org
-  `co2_per_capita`: Global Carbon Budget (2025) and Population based on various sources (2024)
-  `country`, `year`: Our World in Data – Regions (2024)
-  `population`: Population based on various sources (2024), ourworldindata.org/population-sources
-  `iso_code`: International Organization for Standardization - Regions (2023)
+- Original sources of the columns used (column `source` in the `codebook`):
+  - `co2`: Global Carbon Budget (2025), globalcarbonbudget.org
+  - `co2_per_capita`: Global Carbon Budget (2025) and Population based on various sources (2024)
+  - `country`, `year`: Our World in Data – Regions (2024)
+  - `population`: Population based on various sources (2024), ourworldindata.org/population-sources
+  - `iso_code`: International Organization for Standardization - Regions (2023)
