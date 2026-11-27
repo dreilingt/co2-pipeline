@@ -5,19 +5,21 @@ A repo for Data Integration course (TH Köln), Lab 4, Tasks 2-7
 
 There are two ways to interpret this question: in terms of the absolute reduction in emissions per capita (tonnes) or the relative reduction (percentage). We compared 27 EU countries using both measures:
 
-1. If you read it as **tonnes per person** (t / person)
-| # | Country | 2000 | 2024 | Cut |
-| --- | --- | --- | --- | --- |
-| 1 | Luxembourg | 19.953 | 10.460 | -9.493 |
-| 2 | Finland | 11.015 | 5.301 | -5.714 |
-| 3 | Ireland | 11.900 | 6.339 | -5.561 |
+1. If you read it as **tonnes per person** (t/person):
 
-2. If you read it as **percent** (%)
-| # | Country | 2000 | 2024 | Cut |
-| --- | --- | --- | --- | --- |
-| 1 | Denmark | 10.170 | 4.746 | -53.3 |
-| 2 | Finland | 11.015 | 5.301 | -51.9 |
-| 3 | Malta | 6.172 | 3.204 | -48.1 |
+   | # | Country | 2000 | 2024 | Reduction |
+   |---|---|---:|---:|---:|
+   | 1 | Luxembourg | 19.953 | 10.460 | -9.493 |
+   | 2 | Finland | 11.015 | 5.301 | -5.714 |
+   | 3 | Ireland | 11.900 | 6.339 | -5.561 |
+
+2. If you read it as **percentage reduction** (%):
+
+   | # | Country | 2000 | 2024 | Reduction |
+   |---|---|---:|---:|---:|
+   | 1 | Denmark | 10.170 | 4.746 | -53.3 |
+   | 2 | Finland | 11.015 | 5.301 | -51.9 |
+   | 3 | Malta | 6.172 | 3.204 | -48.1 |
 
 ### Chart
 ![Two bar charts: top three EU countries by reduction in tonnes per person and in percent, 2000 to 2024](figures/co2_reductions_2000_2024.png)
