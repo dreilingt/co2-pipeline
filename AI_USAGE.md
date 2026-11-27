@@ -29,3 +29,17 @@
 - Rejected: 
   - GitHub Copilot: Creating `tests/test_download.py` (asked twice).
 - Checked: ran every script and command manually.
+
+## 26.11.2026 - 27.11.2026 · Task 5 · Verify, then answer
+- Tool and model: GitHub Copilot in VS Code (Interactive mode, Manual permissions); Claude (Anthropic), Claude Sonnet 5.5.
+- Prompts:
+  - GitHub Copilot: taken from the lab
+  - Claude: guidance through Task 5 step by step; help with reading the IDEA source (French); proofreading of `workflow.md` and `README.md`
+- Output: the final version of *Verify* section in `workflow.md` and the `README.md`.
+- Accepted: the structure of the texts, the shortened README answer. I did not ask Claude to check the Credits section, as I had verified the links myself.
+- Changed:
+  - GitHub Copilot: nothing, I only checked its answer.
+  - Claude: I shortened the texts, and rewrote the final versions in my own words.
+- Rejected:
+  - Claude: its first comparison of the 2.55 million tonnes with our `co2` column (the IDEA figure is CO₂eq, our column is CO₂, so the bases differ).
+- Checked: ran the pipeline in a fresh clone and compared the numbers; recalculated Luxembourg's emissions per person by hand from the raw file; read the IDEA analysis myself and compared it with the agent's number (2.55 million tonnes, found).
