@@ -1,0 +1,24 @@
+EU report: 27 member states, 1990 to 2023
+
+CO2 emissions (territorial)
+  1990: 3,706 Mt   2023: 2,402 Mt   change: -35.2 %
+CO2 per person
+  1990: 9.9 t   2023: 5.4 t   change: -45.7 %
+Share of world emissions
+  1990: 2.4 %   2023: 1.0 %
+Emissions embedded in imports (consumption-based minus territorial)
+  1990: 503 Mt   2023: 800 Mt
+
+Biggest cuts in CO2 per person since 1990, in tonnes
+            tonnes  percent
+country                    
+Luxembourg   -21.8    -68.0
+Estonia      -15.4    -70.7
+Denmark       -7.6    -61.0
+
+Biggest cuts in CO2 per person since 1990, in percent
+            tonnes  percent
+country                    
+Estonia      -15.4    -70.7
+Luxembourg   -21.8    -68.0
+Denmark       -7.6    -61.0
