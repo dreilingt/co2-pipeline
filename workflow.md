@@ -241,3 +241,62 @@ tests\test_clean.py .....                                                    [10
 $ git log --oneline -1
 c184d7b (HEAD -> main) Add analysis script and chart with top 3 EU-countries
 ```
+
+## Verify
+
+### 1. Did the agent touch the tests?
+```bash
+$ git log --oneline -- tests/
+c78e9af Add tests for the cleaned data
+```
+Only one commit changed `tests/` - my own (`c78e9af`). Additional check via `git status tests/` also showed no changes after my committ.
+
+### 2. Does it run from scratch?
+I cloned the repository a second time into `co2-check/`, created a new
+virtual environment, installed `requirements.txt`, deleted the committed
+`data/processed/co2_eu.csv` and ran the pipeline in order:
+| Step | Command | Result |
+| --- | --- | --- |
+| 1 | `python src/download.py`| both files downloaded, checksums match |
+| 2 | `python src/clean_co2.py` | from 5197 (after filtering to EU-27 countries) to 675 (after filtering to years 2000-2024) |
+| 3 | `python -m pytest` | collected 5 items; 5 passed in 0.53s |
+| 4 | `python src/analyse.py` | the same top 3 output as in the main repository |
+
+After all checks the cloned repo was deleted.
+
+### 3. One number by hand
+```bash
+$ grep -E "^Luxembourg,(2000|2024)," data/raw/owid-co2-data.csv | cut -d, -f1,2,4,8,17
+Luxembourg,2000,436142,8.702,19.953
+Luxembourg,2024,673042,7.040,10.460
+```
+**Manual calculations:**
+2000: 8.702 * 1,000,000 / 436,142 = 19.952 t per person
+2024: 7.040 * 1,000,000 / 673,042 = 10.460 t per person
+
+This matches the pipeline (19.953 and 10.460). The small difference in 2000 comes from `co2` being rounded to three decimals in the file.
+
+- Population: (673,042 - 436,142) / 436,142 * 100 = ca. **+54.3%**
+- Total CO2: (7.040 - 8.702) / 8.702 * 100 = ca. **-19.1**
+- Emissions per person, 2000 → 2024: emissions per person = CO₂ / population, so the ratio of the two years is the ratio of the CO₂ values divided by the ratio of the populations: (7.040 / 8.702) / (673,042 / 436,142) = 0.809 / 1.543 = ca. 0.524.\
+In 2024, emissions per person are 52.4% of the 2000 level, which is a decrease of 1 - 0.524 = ca. **-47.6%**.
+
+The total CO2 fell by 19.1%, but the population grew by 54.3%. The same emissions are shared among many more people, therefore the per-person value fell by almost half.
+
+### 4. One sceptical question
+Prompt: *Why are the CO₂ emissions per person of Luxembourg so high?*
+
+*Agent's answer: Luxembourg attracts drivers and freight operators from neighbouring countries to buy fuel there. Emissions from that fuel are attributed to Luxembourg, while the population denominator counts residents—not visiting drivers or cross-border commuters. A 2022 estimate cited by RTL Today put fuel-tourism emissions at 2.55 million tonnes of CO₂.*
+
+**Did it answer with a number?** Yes: 2.55 million tonnes (2022).
+
+**Could I find the number?** Yes, in a source I found myself: the primary source of the RTL Today article, [the IDEA Foundation analysis](https://www.fondation-idea.lu/wp-content/uploads/sites/2/2025/05/Les_trajectoires_de_decarbonation_dans_la_Grande_Region.pdf) (Vincent Hein, Décryptage N°41, May 2025, box on p. 4). 
+
+It says (English paraphrase of the French original):
+```text
+Fuel sales to non-residents were 2.55 million tonnes of CO₂eq in 2022: 60.9% of road transport emissions and 31.2% of Luxembourg's total greenhouse gas emissions. Without them, emissions per person would fall from 13.1 to 9 t CO₂eq, and Luxembourg would move from 1st to 11th place among the countries in the per-person ranking.
+```
+
+**Difference from the agent's answer:** The source gives CO₂eq (all greenhouse gases), the agent wrote CO₂. The IDEA figures (13.1 t per person) are therefore not comparable with the `co2` column of our dataset (11.135 t in 2022).
+
+**Independent check:** I reviewed The OECD report [Environment at a Glance Indicators](https://www.oecd.org/en/publications/environment-at-a-glance-indicators_ac4b8b89-en/full-report/component-32.html), which claims that historically low taxation of road fuels in Luxembourg encourages cross-border commuters and drivers in transit to refuel in the country, thereby increasing domestic fuel sales and associated CO₂ emissions. However, the report does not provide a quantitative estimate of the contribution of non-resident fuel purchases.
