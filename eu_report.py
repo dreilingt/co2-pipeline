@@ -21,7 +21,7 @@ BASE_YEAR = 1990  # base year of the EU climate targets
 MEMBERS = pd.DataFrame(
     [
         ("Austria", 1995), ("Belgium", 1958), ("Bulgaria", 2007),
-        ("Croatia", 2013), ("Cyprus", 2004), ("Czech Republic", 2004),
+        ("Croatia", 2013), ("Cyprus", 2004), ("Czechia", 2004),
         ("Denmark", 1973), ("Estonia", 2004), ("Finland", 1995),
         ("France", 1958), ("Germany", 1958), ("Greece", 1981),
         ("Hungary", 2004), ("Ireland", 1973), ("Italy", 1958),
