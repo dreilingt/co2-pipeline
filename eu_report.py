@@ -41,13 +41,12 @@ def load(path=DATA):
 def eu_members(df):
     """Rows of the EU member states, with the year each one joined."""
     eu = df.merge(MEMBERS, on="country")
-    # consumption-based emissions are needed for the imports section
-    return eu.dropna(subset=["consumption_co2"])
+    return eu
 
 
 def eu_totals(eu):
     """Territorial and consumption-based CO2 of the EU per year, in Mt."""
-    return eu.groupby("year")[["co2", "consumption_co2"]].sum()
+    return eu.groupby("year")[["co2", "consumption_co2"]].sum(min_count=1)
 
 
 def per_person(eu):
@@ -59,6 +58,11 @@ def world_share(df, eu):
     """Share of the EU in global CO2 emissions per year, in percent."""
     world = df.groupby("year")["co2"].sum()
     return (100 * eu_totals(eu)["co2"] / world).dropna()
+
+
+def embedded_imports(totals):
+    """Consumption-based minus territorial CO2 per year, in Mt; only years with data."""
+    return (totals["consumption_co2"] - totals["co2"]).dropna()
 
 
 def biggest_cuts(eu, since=BASE_YEAR):
@@ -106,9 +110,10 @@ def main():
     print("Share of world emissions")
     print(f"  {first}: {share[first]:.1f} %   {latest}: {share[latest]:.1f} %")
 
-    c0, c1 = totals.loc[first, "consumption_co2"], totals.loc[latest, "consumption_co2"]
+    imports = embedded_imports(totals)
+    last_imports = imports.index.max()
     print("Emissions embedded in imports (consumption-based minus territorial)")
-    print(f"  {first}: {c0 - t0:,.0f} Mt   {latest}: {c1 - t1:,.0f} Mt")
+    print(f"  {first}: {imports[first]:,.0f} Mt   {last_imports}: {imports[last_imports]:,.0f} Mt")
 
     cuts = biggest_cuts(eu)
     print(f"\nBiggest cuts in CO2 per person since {first}, in tonnes")
