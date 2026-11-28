@@ -21,6 +21,8 @@ Manual review of the script `eu_report.py`, based on the slide *Review checklist
 | 5 | `>` instead of `>=` | found | found | This changes the ranking: for example, Denmark appears in the 1991-based top three for tonnes, but Germany or Lithuania rank differently against 1990. |
 | 6 | misleading chart | yes | yes | Y-axis label says `t` (tonnes) but values are `Mt` (milliom tonnes); the 2000 baseline exaggerates differences |
 
+Agent's statement, which was not in our list: *"Emissions embedded in imports" is only a net difference. The calculation prints `consumption_co2` - `co2`. According to the `codebook`, this is consumption-based minus territorial emissions, i.e. net imported-minus-exported emissions—not gross import emissions.*
+
 #### Checked number
 
 The agent reports that the "correct 26-country share" of the EU in 1990 is 16.30%.
