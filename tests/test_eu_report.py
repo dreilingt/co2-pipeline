@@ -66,3 +66,19 @@ def test_imports_match_owid_trade_co2(df, owid_eu):
     imports = r.embedded_imports(r.eu_totals(r.eu_members(df)))
     assert imports.loc[2023] == pytest.approx(owid_eu.loc[2023, "trade_co2"], abs=0.1)
 
+# Bug 3: unweighted mean in per_person
+def test_per_person_is_weighted_by_population():
+    toy = pd.DataFrame({
+        "country": ["A", "B"],
+        "year": [1990, 1990],
+        "co2": [90.0, 1.0],                  # Mt
+        "population": [9_000_000, 1_000_000],
+        "co2_per_capita": [10.0, 1.0],       # t per person
+    })
+    assert r.per_person(toy).loc[1990] == pytest.approx(9.1)
+
+
+def test_per_person_matches_owid(df, owid_eu):
+    pp = r.per_person(r.eu_members(df))
+    assert pp.loc[1990] == pytest.approx(owid_eu.loc[1990, "co2_per_capita"], abs=0.01)
+    assert pp.loc[2024] == pytest.approx(owid_eu.loc[2024, "co2_per_capita"], abs=0.01)
