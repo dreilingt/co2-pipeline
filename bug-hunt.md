@@ -33,7 +33,7 @@ OWID gives the share of the whole EU-27 in the column `share_global_co2`: 17.025
 
 The same holds for 2023: 6.523% (EU-27) - 6.30% (agent) is about 0.22, and Czechia's share is 0.218%.
 
-Conclusion: the agent's number is not wrong arithmetically, but it inherits bug #1 (Czechia is missing). The correct share of the EU-27 is 17.025% (1990) and 6.523% (2023).
+Conclusion: the agent's number is not wrong arithmetically, but it inherits bug #1 (Czechia is missing). **The correct share of the EU-27 is 17.025% (1990) and 6.523% (2023).**
 
 Command for the OWID numbers: `grep -E "^(Czechia|European Union \(27\)),(1990|2023)," data/raw/owid-co2-data.csv | cut -d, -f1,2,54`
 
@@ -44,3 +44,13 @@ The fix, checked by looking at `eu_report.png`:
 - `ax.set_ylim(2000, None)` removed: the y-axis of a bar chart starts at 0, otherwise the bars exaggerate the change.
 
 New silent error created by the fix of bug #2: after keeping 2024 in the data, `chart` was called with 2024, for which `consumption_co2` is missing, so the bar of the consumption-based emissions was missing. `main()` now passes the last year with data (2023, the same year as in the imports section).
+
+## Conclusion
+
+The error that changed the report the most is bug #4 (`world_share`): the EU's share of world emissions was **2.40% instead of 17.02% in 1990** and about **1.00% instead of 6.52% in 2023**, because the denominator was the sum of all rows (154,667 Mt in 1990, including continents and income groups) instead of the `World` row (22,732 Mt). 
+
+The most convincing wrong number would be the change in CO2 per person: **-45.7% vs. -41.5%** (in reports before and after fixes). The incorrect value is only about 4 percentage points away from the correct one, which makes it look plausible. The discrepancy becomes apparent only after all fixes have been applied (`Czechia`, 2024, weighted mean).
+
+The agent found all six errors much faster than I did in the manual review, but its "correct" shares (16.30% and 6.30%) were computed without Czechia and therefore inherit bug #1.
+
+However, manual fixes also created new silent errors: after keeping 2024, the imports line showed -2,426 Mt and the chart lost the consumption-based bar. Therefore, after every fix we must read the whole report and open the chart again, and a test only proves something, if we have seen it fail first.
