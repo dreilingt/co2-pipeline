@@ -57,7 +57,9 @@ def per_person(eu):
 
 def world_share(df, eu):
     """Share of the EU in global CO2 emissions per year, in percent."""
-    world = df.groupby("year")["co2"].sum()
+    # Use only the row "World" as denominator. Summing all rows would also add
+    # continents, income groups and other aggregates on top of the countries.
+    world = df[df["country"] == "World"].set_index("year")["co2"]
     return (100 * eu_totals(eu)["co2"] / world).dropna()
 
 
