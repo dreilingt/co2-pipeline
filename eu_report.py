@@ -70,7 +70,7 @@ def embedded_imports(totals):
 
 def biggest_cuts(eu, since=BASE_YEAR):
     """Change in CO2 per person of each member state since a given year."""
-    period = eu[eu["year"] > since].sort_values("year")
+    period = eu[eu["year"] >= since].sort_values("year")
     first = period.groupby("country")["co2_per_capita"].first()
     last = period.groupby("country")["co2_per_capita"].last()
     cuts = pd.DataFrame({"tonnes": last - first, "percent": 100 * (last / first - 1)})
