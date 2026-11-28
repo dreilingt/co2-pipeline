@@ -36,3 +36,11 @@ The same holds for 2023: 6.523% (EU-27) - 6.30% (agent) is about 0.22, and Czech
 Conclusion: the agent's number is not wrong arithmetically, but it inherits bug #1 (Czechia is missing). The correct share of the EU-27 is 17.025% (1990) and 6.523% (2023).
 
 Command for the OWID numbers: `grep -E "^(Czechia|European Union \(27\)),(1990|2023)," data/raw/owid-co2-data.csv | cut -d, -f1,2,54`
+
+## Fix for bug #6 (chart)
+
+The fix, checked by looking at `eu_report.png`:
+- `ax.set_ylabel("CO2 emissions (t)")` -> `"CO2 emissions (Mt)"`, because the column `co2` is given in million tonnes (codebook: `co2`, million tonnes).
+- `ax.set_ylim(2000, None)` removed: the y-axis of a bar chart starts at 0, otherwise the bars exaggerate the change.
+
+New silent error created by the fix of bug #2: after keeping 2024 in the data, `chart` was called with 2024, for which `consumption_co2` is missing, so the bar of the consumption-based emissions was missing. `main()` now passes the last year with data (2023, the same year as in the imports section).
