@@ -1,0 +1,24 @@
+EU report: 27 member states, 1990 to 2024
+
+CO2 emissions (territorial)
+  1990: 3,870 Mt   2024: 2,426 Mt   change: -37.3 %
+CO2 per person
+  1990: 9.2 t   2024: 5.4 t   change: -41.5 %
+Share of world emissions
+  1990: 17.0 %   2024: 6.3 %
+Emissions embedded in imports (consumption-based minus territorial)
+  1990: 490 Mt   2023: 817 Mt
+
+Biggest cuts in CO2 per person since 1990, in tonnes
+            tonnes  percent
+country                    
+Luxembourg   -20.5    -66.2
+Estonia      -17.4    -74.0
+Czechia       -8.9    -55.8
+
+Biggest cuts in CO2 per person since 1990, in percent
+            tonnes  percent
+country                    
+Estonia      -17.4    -74.0
+Luxembourg   -20.5    -66.2
+Czechia       -8.9    -55.8
