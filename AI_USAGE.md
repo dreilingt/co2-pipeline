@@ -43,3 +43,19 @@
 - Rejected:
   - Claude: its first comparison of the 2.55 million tonnes with our `co2` column (the IDEA figure is CO₂eq, our column is CO₂, so the bases differ).
 - Checked: ran the pipeline in a fresh clone and compared the numbers; recalculated Luxembourg's emissions per person by hand from the raw file; read the IDEA analysis myself and compared it with the agent's number (2.55 million tonnes, found).
+
+## 28.11.2026 · Task 6 · Find the silent errors
+### Tool and model: Claude (Anthropic), Claude Sonnet 5.5.
+- Prompts (summarised): check my explanations of 3 found bugs and help with other ones, explain how to carry out step 2 with the commands from lab 2 where necessary, not with pandas; check my wording of the rows.
+- Output: `grep`, `cut` and `awk` commands to compare the report with the OWID rows `European Union (27)` and `World`; explanations of `dropna(subset=["consumption_co2"])`, `.mean()` and of `world_share` and commands to check them; drafts and wording of rows 2-4 of the table.
+- Accepted: the command line checks, the wording of rows 2-4
+- Changed/rejected: Python scripts.
+- Checked: ran all commands on my own `data/raw/owid-co2-data.csv`: `Czechia` vs. `Czech Republic` (26 of 27 countries), last year with `co2` (2024) and with `consumption_co2` (2023), EU-27 per person 9.215 t (`co2 * 1000000 / population`), sum of all rows 154,667 Mt vs. row `World` 22,732 Mt, Denmark 10.402 / 12.437 / 4.847 t (1990 / 1991 / 2023).
+
+### Tool and model: GitHub Copilot in VS Code (Interactive mode, Manual permissions)
+- Prompt: taken from the lab.
+- Output: a list of 7 points (Czechia missing, 2024 discarded by `dropna`, unweighted per-person mean, wrong world-share denominator, `>` instead of `>=`, "imports" is a net difference, chart unit and axis). No file was changed.
+- Accepted: points 1-5 and 7 as matching my own list; its evidence is documented in the second table of `bug-hunt.md`.
+- Changed: nothing was taken over as code.
+- Rejected: point 6 (imports) is not counted as one of the errors. `consumption_co2 - co2` equals the OWID column `trade_co2` for EU-27 (1990: 489.914 Mt, 2023: 817.2 Mt), so the number is correct. The codebook defines `trade_co2` as "annual net carbon dioxide (CO₂) emissions embedded in trade", so only the label "embedded in imports" is imprecise (it is a net value). Checked with `grep -E "^European Union \(27\),(1990|2023)," data/raw/owid-co2-data.csv | cut -d, -f1,2,8,22,78` and `grep -i "^trade_co2," data/raw/owid-co2-codebook.csv`.
+- Checked: its share numbers 16.30% (1990) and 6.30% (2023) are for 26 countries. OWID's `share_global_co2` of `European Union (27)` is 17.025% and 6.523%, the difference equals the share of Czechia (0.723% and 0.218%).
