@@ -59,3 +59,12 @@
 - Changed: nothing was taken over as code.
 - Rejected: point 6 (imports) is not counted as one of the errors. `consumption_co2 - co2` equals the OWID column `trade_co2` for EU-27 (1990: 489.914 Mt, 2023: 817.2 Mt), so the number is correct. The codebook defines `trade_co2` as "annual net carbon dioxide (CO₂) emissions embedded in trade", so only the label "embedded in imports" is imprecise (it is a net value). Checked with `grep -E "^European Union \(27\),(1990|2023)," data/raw/owid-co2-data.csv | cut -d, -f1,2,8,22,78` and `grep -i "^trade_co2," data/raw/owid-co2-codebook.csv`.
 - Checked: its share numbers 16.30% (1990) and 6.30% (2023) are for 26 countries. OWID's `share_global_co2` of `European Union (27)` is 17.025% and 6.523%, the difference equals the share of Czechia (0.723% and 0.218%).
+
+## 28.11.2026 · Task 7 · Catch, fix, compare
+- Tool and model: Claude (Anthropic), Claude Sonnet 5.5.
+- Prompts (summarised): accomplish this task step-by-step with me, helping me to understand how to write tests (they are new to me) and fix the code; "I fixed the code for my chart, but I see no changes, help my to find my mistake".
+- Output: tests for errors, code for fixes with a detailed explanation.
+- Accepted: all tests and fixes above, after reading and running them.
+- Changed: I chose to describe bug #6 in `bug-hunt.md` instead of writing a test; in `test_missing_consumption_is_not_summed_to_zero` `[None, None]` was replaced with `float("nan")`, because pandas gives an all-`None` column the type `object`.
+- Rejected: the assistant's script `scratch_checks.py`, test for bug #6
+- Checked: each new test was run and failed before the fix, then all tests passed (15 passed at the end). After each fix I ran `python eu_report.py | tee report_after.txt` and `diff report_before.txt report_after.txt`. After my edit, I checked the `chart` and noticed that I had accidentally removed the `savefig` line. As a result, the image was not being updated, even though all tests were still passing. I only discovered the issue when I checked the chart myself.
